@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pemantauan Emosi Harian</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <h1 class="app-title">Aplikasi Pemantauan Emosi Harian</h1>
+            <ul class="nav-links">
+                <li><a href="#pencatatan" class="nav-link">Pencatatan Emosi</a></li>
+                <li><a href="#grafik" class="nav-link">Grafik Tren Emosi</a></li>
+                <li><a href="#rekomendasi" class="nav-link">Rekomendasi Aktivitas</a></li>
+                <li><a href="#notifikasi" class="nav-link">Notifikasi Pengingat</a></li>
+                <li><a href="#analisis" class="nav-link">Analisis Tren Emosi</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="pencatatan" class="section">
+            <h2>Pencatatan Emosi</h2>
+            <div class="emotion-calendar">
+                <div class="calendar-header">
+                    <i class="fas fa-chevron-left prev-month"></i>
+                    <div class="month-year">April 2025</div>
+                    <i class="fas fa-chevron-right next-month"></i>
+                </div>
+                <div class="calendar-grid">
+                    <!-- Calendar days will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <form class="emotion-form">
+                <div class="emotion-selector">
+                    <label for="emotion">Pilih Emosi Anda:</label>
+                    <select id="emotion" name="emotion">
+                        <option value="senang" data-icon="😊">Senang</option>
+                        <option value="cemas" data-icon="😟">Cemas</option>
+                        <option value="marah" data-icon="😡">Marah</option>
+                        <option value="sedih" data-icon="😢">Sedih</option>
+                    </select>
+                </div>
+                <div class="emotion-description">
+                    <textarea id="emotion-text" placeholder="Tuliskan perasaan Anda…"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Catat Emosi</button>
+            </form>
+        </section>
+
+        <section id="grafik" class="section">
+            <h2>Grafik Tren Emosi</h2>
+            <div class="graph-controls">
+                <button class="time-frame-btn active" data-timeframe="week">Mingguan</button>
+                <button class="time-frame-btn" data-timeframe="month">Bulanan</button>
+                <button class="refresh-btn"><i class="fas fa-sync"></i></button>
+            </div>
+            <div class="chart-container">
+                <canvas id="emotionChart"></canvas>
+            </div>
+        </section>
+
+        <section id="rekomendasi" class="section">
+            <h2>Rekomendasi Aktivitas</h2>
+            <div class="activity-grid">
+                <!-- Activity cards will be populated by JavaScript -->
+            </div>
+        </section>
+
+        <section id="notifikasi" class="section">
+            <h2>Notifikasi Pengingat</h2>
+            <div class="reminder-settings">
+                <div class="toggle-switch">
+                    <input type="checkbox" id="reminder-toggle">
+                    <label for="reminder-toggle"></label>
+                </div>
+                <div class="time-picker">
+                    <input type="time" id="reminder-time" value="09:00">
+                    <i class="fas fa-bell reminder-bell"></i>
+                </div>
+            </div>
+        </section>
+
+        <section id="analisis" class="section">
+            <h2>Analisis Tren Emosi</h2>
+            <div class="analysis-container">
+                <div class="emotion-distribution">
+                    <canvas id="emotionDistribution"></canvas>
+                </div>
+                <div class="emotion-timeline">
+                    <h3>Timeline Emosi</h3>
+                    <div class="timeline-chart">
+                        <!-- Timeline will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="analysis-tips">
+                    <div class="tip-card">
+                        <i class="fas fa-lightbulb"></i>
+                        <div class="tip-content">
+                            <h3>Tip Emosi</h3>
+                            <p>Cemas lebih banyak pada awal minggu. Cobalah untuk beristirahat lebih banyak.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p>&copy; 2025 Aplikasi Pemantauan Emosi Harian</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

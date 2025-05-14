@@ -1,0 +1,573 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: #333;
+}
+
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Header styles */
+header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.app-title {
+    font-size: 1.8rem;
+    color: #4CAF50;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    animation: titleGlow 3s infinite;
+}
+
+@keyframes titleGlow {
+    0% { text-shadow: 2px 2px 4px rgba(76, 175, 80, 0.1); }
+    50% { text-shadow: 2px 2px 4px rgba(76, 175, 80, 0.3); }
+    100% { text-shadow: 2px 2px 4px rgba(76, 175, 80, 0.1); }
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-link {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease, transform 0.2s ease;
+    position: relative;
+    padding: 0.5rem;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #4CAF50;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.nav-link:hover {
+    color: #4CAF50;
+    transform: translateY(-2px);
+}
+
+/* Main content styles */
+main {
+    max-width: 1200px;
+    margin: 80px auto 40px;
+    padding: 0 1rem;
+}
+
+.section {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.section:hover {
+    transform: translateY(-5px);
+}
+
+/* Emotion form styles */
+.emotion-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.emotion-selector select {
+    padding: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.emotion-selector select:hover {
+    border-color: #4CAF50;
+}
+
+.emotion-selector select:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    outline: none;
+}
+
+.emotion-description textarea {
+    padding: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    min-height: 100px;
+    resize: vertical;
+    transition: all 0.3s ease;
+}
+
+.emotion-description textarea:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    outline: none;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #4CAF50, #388E3C);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+}
+
+.submit-btn:active {
+    transform: translateY(1px);
+}
+
+/* Emotion Calendar Styles */
+.calendar-header-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 10px 10px 0 0;
+}
+
+.calendar-day-header {
+    text-align: center;
+    font-weight: 500;
+    color: #666;
+}
+
+.calendar-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.calendar-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.calendar-cell:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+}
+
+.calendar-cell.empty {
+    background: transparent;
+    cursor: default;
+}
+
+.emotion-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-top: 4px;
+}
+
+.emotion-indicator[data-emotion="senang"] {
+    background: #4CAF50;
+}
+
+.emotion-indicator[data-emotion="cemas"] {
+    background: #FFC107;
+}
+
+.emotion-indicator[data-emotion="marah"] {
+    background: #F44336;
+}
+
+.emotion-indicator[data-emotion="sedih"] {
+    background: #2196F3;
+}
+
+/* Calendar styles */
+.emotion-calendar {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.calendar-header i {
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.calendar-header i:hover {
+    color: #4CAF50;
+}
+
+/* Activity cards */
+.activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.activity-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.activity-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.activity-card i {
+    font-size: 2.5rem;
+    color: #4CAF50;
+    margin-bottom: 1rem;
+}
+
+/* Toggle switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-switch label {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggle-switch label:before {
+    content: "";
+    position: absolute;
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + label {
+    background-color: #4CAF50;
+}
+
+.toggle-switch input:checked + label:before {
+    transform: translateX(26px);
+}
+
+/* Chart container */
+.chart-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Chart Styles */
+.chart-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Activity Details */
+.activity-details {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-width: 400px;
+    width: 90%;
+}
+
+.close-details {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+/* Success Toast */
+.success-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #4CAF50;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Reminder Bell Animation */
+.reminder-bell {
+    margin-left: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.reminder-bell.active {
+    animation: bellShake 0.5s ease-in-out infinite;
+}
+
+@keyframes bellShake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+/* Activity Card Hover Effects */
+.activity-card {
+    transition: all 0.3s ease;
+}
+
+.activity-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Feedback */
+.emotion-form {
+    position: relative;
+}
+
+.emotion-form::after {
+    content: attr(data-message);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4CAF50;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.emotion-form.success::after {
+    opacity: 1;
+}
+
+/* Time frame buttons */
+.graph-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.time-frame-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.time-frame-btn.active {
+    background: #4CAF50;
+    color: white;
+}
+
+.refresh-btn {
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.refresh-btn:hover {
+    color: #4CAF50;
+}
+
+/* Analysis styles */
+.analysis-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.emotion-distribution {
+    background: white;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+/* Tip card */
+.tip-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tip-card i {
+    font-size: 2rem;
+    color: #4CAF50;
+    margin-bottom: 1rem;
+}
+
+/* Footer styles */
+footer {
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    color: white;
+    padding: 2rem 0;
+    margin-top: 4rem;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.social-icon {
+    color: white;
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+    color: #4CAF50;
+    transform: translateY(-3px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .analysis-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,501 @@
+// Inisialisasi variabel global
+const pages = document.querySelectorAll('.page');
+const navButtons = document.querySelectorAll('nav button');
+const form = document.getElementById('emotionForm');
+const emotionRadios = document.querySelectorAll('input[name="emotion"]');
+const descriptionInput = document.getElementById('description');
+const questionnaireForm = document.getElementById('questionnaireForm');
+const recommendationsDiv = document.getElementById('recommendations');
+
+// Inisialisasi emosi dari localStorage atau array kosong
+let emotionData = JSON.parse(localStorage.getItem('emotionData')) || [];
+
+// Animasi saat halaman dimuat
+document.addEventListener('DOMContentLoaded', () => {
+  // Sembunyikan semua halaman terlebih dahulu
+  pages.forEach(page => page.style.display = 'none');
+  // Tampilkan halaman aktif
+  document.querySelector('.page.active').style.display = 'block';
+});
+
+// Setup Chart.js
+const ctx = document.getElementById('emotionChart').getContext('2d');
+const emotionChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Senang', 'Cemas', 'Marah', 'Sedih'],
+    datasets: [{
+      label: 'Frekuensi Emosi',
+      data: [0, 0, 0, 0],
+      backgroundColor: ['#4CAF50', '#FFC107', '#F44336', '#2196F3'],
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: { beginAtZero: true, stepSize: 1 }
+    },
+    animation: {
+      duration: 1000,
+      easing: 'easeInOutQuart'
+    }
+  }
+});
+
+// Navigasi antar halaman
+navButtons.forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = btn.getAttribute('data-page');
+    
+    // Hapus class active dari semua tombol dan halaman
+    navButtons.forEach(b => b.classList.remove('active'));
+    pages.forEach(p => p.classList.remove('active'));
+    
+    // Tambah class active ke tombol dan halaman yang dipilih
+    btn.classList.add('active');
+    document.getElementById(target).classList.add('active');
+    
+    // Animasikan transisi halaman
+    pages.forEach(p => {
+      if (p.id === target) {
+        p.style.display = 'block';
+        p.style.animation = 'fadeIn 0.5s ease-out';
+      } else {
+        p.style.display = 'none';
+      }
+    });
+    
+    // Update chart setiap kali membuka dashboard
+    if (target === 'dashboard') {
+      updateChart();
+    }
+  });
+});
+
+// Update chart dengan data terbaru
+function updateChart() {
+  const counts = {
+    senang: 0, 
+    cemas: 0, 
+    marah: 0, 
+    sedih: 0
+  };
+  
+  // Hitung frekuensi setiap emosi
+  emotionData.forEach(e => counts[e.emotion]++);
+  
+  // Update data chart
+  emotionChart.data.datasets[0].data = [
+    counts.senang,
+    counts.cemas,
+    counts.marah,
+    counts.sedih
+  ];
+  
+  // Update chart
+  emotionChart.update();
+  
+  // Simpan ke localStorage
+  localStorage.setItem('emotionData', JSON.stringify(emotionData));
+}
+
+// Update rekomendasi berdasarkan emosi terakhir
+function updateRecommendations() {
+  if (emotionData.length === 0) {
+    recommendationsDiv.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-comment-alt-smile"></i>
+        <h3>Belum ada data</h3>
+        <p>Rekomendasi akan muncul di sini setelah Anda mencatat emosi atau mengisi kuesioner.</p>
+      </div>`;
+    return;
+  }
+  
+  const lastEmotion = emotionData[emotionData.length - 1].emotion;
+  let recHtml = "";
+  let emoji = "";
+  let colorClass = "";
+  
+  // Tentukan rekomendasi berdasarkan emosi
+  const recommendations = {
+    senang: {
+      title: "Anda tampak dalam suasana hati yang baik!",
+      message: "Terus lakukan hal yang membuat Anda bahagia. Berikut kutipan untuk Anda:",
+      quote: "\"Hidup adalah apa yang terjadi ketika kamu sedang sibuk membuat rencana.\" — John Lennon",
+      icon: "laugh-beam",
+      color: "var(--happy-color)"
+    },
+    cemas: {
+      title: "Kecemasan bisa diatasi!",
+      message: "Coba teknik relaksasi sederhana untuk menenangkan pikiran:",
+      tips: [
+        "Ambil napas dalam 4 hitungan, tahan 4 hitungan, buang napas 6 hitungan",
+        "Lakukan peregangan ringan selama 5 menit",
+        "Tuliskan apa yang mengganggu pikiran Anda"
+      ],
+      icon: "flushed",
+      color: "var(--anxious-color)"
+    },
+    marah: {
+      title: "Rasakan kemarahan sebagai energi positif",
+      message: "Cara sehat untuk menyalurkan energi emosional:",
+      tips: [
+        "Lakukan aktivitas fisik seperti berjalan cepat atau lompat-lompat",
+        "Tepuk bantal atau berteriak di tempat yang sepi",
+        "Ekspresikan perasaan Anda melalui tulisan atau gambar"
+      ],
+      icon: "angry",
+      color: "var(--angry-color)"
+    },
+    sedih: {
+      title: "Perasaan sedih adalah hal yang wajar",
+      message: "Beberapa hal yang mungkin bisa membantu:",
+      tips: [
+        "Dengarkan lagu yang mengangkat semangat",
+        "Hubungi teman atau keluarga untuk mengobrol",
+        "Luangkan waktu untuk melakukan hobi yang disukai"
+      ],
+      icon: "sad-tear",
+      color: "var(--sad-color)"
+    }
+  };
+  
+  const rec = recommendations[lastEmotion];
+  
+  // Bangun HTML untuk rekomendasi
+  recHtml = `
+    <div class="recommendation-card" style="border-left: 4px solid ${rec.color};">
+      <div class="recommendation-header">
+        <i class="far fa-${rec.icon}" style="color: ${rec.color};"></i>
+        <h3>${rec.title}</h3>
+      </div>
+      <div class="recommendation-body">
+        <p>${rec.message}</p>
+        ${rec.quote ? `
+          <blockquote style="border-left-color: ${rec.color};">
+            ${rec.quote}
+          </blockquote>` : ''}
+        ${rec.tips ? `
+          <div class="tips">
+            <h4>Tips untuk Anda:</h4>
+            <ul>${rec.tips.map(tip => `<li>${tip}</li>`).join('')}</ul>
+          </div>` : ''}
+      </div>
+    </div>`;
+    
+  recommendationsDiv.innerHTML = recHtml;
+  
+  // Simpan ke localStorage
+  localStorage.setItem('emotionData', JSON.stringify(emotionData));
+}
+
+// Submit form pencatatan emosi manual
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // Dapatkan emosi yang dipilih
+  let selectedEmotion = '';
+  emotionRadios.forEach(radio => {
+    if (radio.checked) {
+      selectedEmotion = radio.value;
+    }
+  });
+  
+  const description = descriptionInput.value.trim();
+
+  if (!selectedEmotion) {
+    showAlert('error', 'Silakan pilih emosi terlebih dahulu');
+    return;
+  }
+  
+  // Tambahkan emosi baru
+  emotionData.push({
+    emotion: selectedEmotion, 
+    description: description || 'Tidak ada deskripsi', 
+    timestamp: new Date().toISOString()
+  });
+  
+  // Reset form
+  form.reset();
+  
+  // Update UI
+  updateChart();
+  updateRecommendations();
+  
+  // Tampilkan notifikasi sukses
+  showAlert('success', 'Emosi berhasil dicatat!');
+  
+  // Scroll ke rekomendasi
+  document.getElementById('recommendations').scrollIntoView({ behavior: 'smooth' });
+});
+
+// Fungsi untuk menampilkan notifikasi
+function showAlert(type, message) {
+  const alert = document.createElement('div');
+  alert.className = `alert alert-${type}`;
+  alert.textContent = message;
+  
+  // Tambahkan ke body
+  document.body.appendChild(alert);
+  
+  // Hilangkan setelah 3 detik
+  setTimeout(() => {
+    alert.classList.add('fade-out');
+    setTimeout(() => alert.remove(), 500);
+  }, 3000);
+}
+
+// Submit form kuesioner
+questionnaireForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const q1 = parseInt(document.querySelector('input[name="q1"]:checked')?.value || 0);
+  const q2 = parseInt(document.querySelector('input[name="q2"]:checked')?.value || 0);
+  
+  // Validasi apakah semua pertanyaan sudah diisi
+  if (isNaN(q1) || isNaN(q2)) {
+    showAlert('error', 'Silakan jawab semua pertanyaan kuesioner');
+    return;
+  }
+
+
+  const totalScore = q1 + q2;
+
+  // Tentukan emosi berdasarkan skor
+  let detectedEmotion = 'senang';
+  if (totalScore >= 5) detectedEmotion = 'marah';
+  else if (totalScore >= 3) detectedEmotion = 'cemas';
+  else if (totalScore >= 1) detectedEmotion = 'sedih';
+
+  // Tambahkan emosi baru dari kuesioner
+  emotionData.push({
+    emotion: detectedEmotion, 
+    description: 'Hasil kuesioner kesehatan mental', 
+    timestamp: new Date().toISOString()
+  });
+  
+  // Reset form
+  questionnaireForm.reset();
+
+  // Update UI
+  updateChart();
+  updateRecommendations();
+  
+  // Tampilkan notifikasi sukses
+  showAlert('success', 'Kuesioner berhasil disubmit!');
+  
+  // Berpindah ke halaman rekomendasi dengan animasi
+  document.querySelector('button[data-page="recommendation"]').click();
+  
+  // Scroll ke atas halaman rekomendasi
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Setup Chart.js
+const ctx = document.getElementById('emotionChart').getContext('2d');
+const emotionChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Senang', 'Cemas', 'Marah', 'Sedih'],
+    datasets: [{
+      label: 'Frekuensi Emosi',
+      data: [0, 0, 0, 0],
+      backgroundColor: [
+        'rgba(46, 204, 113, 0.7)',  // Hijau untuk senang
+        'rgba(241, 196, 15, 0.7)',  // Kuning untuk cemas
+        'rgba(231, 76, 60, 0.7)',   // Merah untuk marah
+        'rgba(52, 152, 219, 0.7)'   // Biru untuk sedih
+      ],
+      borderColor: [
+        'rgba(46, 204, 113, 1)',
+        'rgba(241, 196, 15, 1)',
+        'rgba(231, 76, 60, 1)',
+        'rgba(52, 152, 219, 1)'
+      ],
+      borderWidth: 1,
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: { 
+        beginAtZero: true, 
+        ticks: {
+          stepSize: 1,
+          precision: 0
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)'
+        }
+      },
+      x: {
+        grid: {
+          display: false
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleFont: {
+          size: 14,
+          weight: 'bold'
+        },
+        bodyFont: {
+          size: 13
+        },
+        padding: 12,
+        cornerRadius: 6
+      }
+    },
+    animation: {
+      duration: 1000,
+      easing: 'easeInOutQuart'
+    }
+  }
+});
+
+// Inisialisasi UI
+document.addEventListener('DOMContentLoaded', () => {
+  // Update chart dan rekomendasi saat halaman dimuat
+  updateChart();
+  updateRecommendations();
+  
+  // Set halaman aktif berdasarkan URL hash
+  const hash = window.location.hash.substring(1) || 'record';
+  const activeBtn = document.querySelector(`button[data-page="${hash}"]`);
+  if (activeBtn) activeBtn.click();
+  
+  // Tambahkan style untuk notifikasi
+  const style = document.createElement('style');
+  style.textContent = `
+    .alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      border-radius: var(--border-radius);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      opacity: 0;
+      transform: translateX(100%);
+      animation: slideIn 0.3s ease-out forwards;
+    }
+    
+    .alert-success {
+      background-color: var(--secondary-color);
+    }
+    
+    .alert-error {
+      background-color: var(--danger-color);
+    }
+    
+    .fade-out {
+      animation: fadeOut 0.5s ease-out forwards;
+    }
+    
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+    }
+    
+    /* Style untuk rekomendasi */
+    .recommendation-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    
+    .recommendation-header {
+      display: flex;
+      align-items: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #f8f9fe 0%, #f1f3f9 100%);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .recommendation-header i {
+      font-size: 1.75rem;
+      margin-right: 1rem;
+    }
+    
+    .recommendation-header h3 {
+      margin: 0;
+      color: var(--dark-color);
+    }
+    
+    .recommendation-body {
+      padding: 1.5rem;
+    }
+    
+    .recommendation-body p {
+      margin-bottom: 1.25rem;
+      color: var(--text-color);
+      line-height: 1.7;
+    }
+    
+    .tips {
+      background: rgba(0, 0, 0, 0.02);
+      border-radius: var(--border-radius);
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    
+    .tips h4 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      color: var(--dark-color);
+    }
+    
+    .tips ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+    
+    .tips li {
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
+    }
+    
+    blockquote {
+      border-left: 4px solid var(--primary-color);
+      margin: 1.5rem 0;
+      padding: 1rem 1.5rem;
+      background: rgba(94, 114, 228, 0.05);
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      font-style: italic;
+      color: var(--dark-color);
+    }
+    
+    blockquote::before {
+      content: '201C';
+      font-size: 3rem;
+      color: var(--primary-color);
+      opacity: 0.2;
+      position: absolute;
+      margin-left: -1.5rem;
+      margin-top: -1rem;
+    }
+  `;
+  
+  document.head.appendChild(style);
+});
